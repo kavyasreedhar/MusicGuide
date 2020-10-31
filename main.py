@@ -56,7 +56,7 @@ class Score():
     
   def generate_lilypond(self, filename):
     with open(filename, "w+") as output:
-      output.write("\relative c' {\n")
+      output.write("\\relative c' {\n")
       
       for note in self.notes:
         output.write(note.print())
