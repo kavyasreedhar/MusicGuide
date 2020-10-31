@@ -54,7 +54,7 @@ class Score():
                              octave=note_octave,
                              accidental=accidental))
     
-  def generate_lilypond(self, filename):
+  def generate_lilypond(self, filename="lilypond.ly"):
     with open(filename, "w+") as output:
       output.write("\\relative c' {\n")
       
@@ -65,4 +65,4 @@ class Score():
     
 score = Score()
 score.add_notes(["C#.4.16", "Eb.4.2", "G.4.4", "E.4.8", "R.4"])
-score.generate_lilypond("t.txt")
+score.generate_lilypond("t.ly")
