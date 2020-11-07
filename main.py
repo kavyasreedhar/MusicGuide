@@ -69,12 +69,12 @@ class Lyric():
     
   def print(self):
     if self.lyrics is not None:
-    	out = "\addlyrics {\n"
-    	out += lyrics
-    	out = "}"
-        return out
+      out = "\addlyrics {\n"
+      out += lyrics
+      out = "}"
+      return out
     else:
-        return ""
+      return ""
     
 class Score():
   def __init__(self,
