@@ -41,7 +41,7 @@ class Signature():
     self.bot = bot
     
   def print(self):
-    out = "\time " + str(self.top) + "/" + str(self.bot) + "\n"
+    out = "\\time " + str(self.top) + "/" + str(self.bot) + "\n"
     return out
     
 class Key():
@@ -58,7 +58,7 @@ class Key():
     self.key_m = key_m
     
   def print(self):
-    out = "\key " + self.key_note.print() + " \\" + self.key_m
+    out = "\\key " + self.key_note.print() + " \\" + self.key_m
     return out 
 
 class Lyric():
@@ -69,7 +69,7 @@ class Lyric():
     
   def print(self):
     if self.lyrics is not None:
-      out = "\addlyrics {\n"
+      out = "\\addlyrics {\n"
       out += self.lyrics
       out = "}"
       return out
