@@ -70,7 +70,7 @@ class Lyric():
   def print(self):
     if self.lyrics is not None:
       out = "\addlyrics {\n"
-      out += lyrics
+      out += self.lyrics
       out = "}"
       return out
     else:
@@ -134,7 +134,7 @@ class Score():
       for note in self.notes:
         m_count += 1 / int(note.length)
         # end measure
-        if m_count > self.signature_top / 4:
+        if m_count > self.sig.top / 4:
           output.write(" | \n")
           m_count = 1 / int(note.length)
         output.write(note.print())
@@ -145,11 +145,11 @@ class Score():
       output.write("\\bar" + '"%s"' % ending_bar)
       output.write("}\n")
       
-      output.write(self.lyric.print())
+      output.write(self.lyrics.print())
     
       
 score = Score()
-score.add_key("3/4")
+score.add_signature("3/4")
 score.add_key("Eb.major")
 score.add_notes(["C#.4.8", "Eb.4.2", "G.4.4", "E.4.8", "R.4"])
 score.add_lyrics("This is a test song")
