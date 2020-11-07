@@ -34,6 +34,9 @@ class Note():
 class Score():
   def __init__(self):
     self.notes = []
+    self.signature_top = 4
+    self.signature_bot = 4
+    
     
   def add_notes(self, notes):
     for note in notes:
@@ -58,11 +61,20 @@ class Score():
     with open(filename, "w+") as output:
       output.write("\\relative c' {\n")
       
+      m_count = 0
       for note in self.notes:
+        print(m_count, " before")
+        m_count += 1 / int(note.length)
+        # end measure
+        print(m_count, " ", note.length)
+        if m_count > self.signature_top / 4:
+          print("here")
+          output.write(" | \n")
+          m_count = 1 / int(note.length)
         output.write(note.print())
         output.write(" ")
       output.write("}\n")
     
 score = Score()
 score.add_notes(["C#.4.16", "Eb.4.2", "G.4.4", "E.4.8", "R.4"])
-score.generate_lilypond("t.ly")
+score.generate_lilypond("ltest.ly")
