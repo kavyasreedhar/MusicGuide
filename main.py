@@ -69,7 +69,7 @@ class Lyric():
     
   def print(self):
     if self.lyrics is not None:
-      out = "\addlyrics {\n"
+      out = "\\addlyrics {\n"
       out += lyrics
       out = "}"
       return out
