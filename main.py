@@ -125,11 +125,9 @@ class Score():
     
   def generate_lilypond(self, filename="lilypond.ly"):
     with open(filename, "w+") as output:
-      output.write(self.sig.print())
-      output.write(self.key.print())
-      
       output.write("\\relative c' {\n")
-      
+      output.write(self.sig.print())
+      output.write(self.key.print())     
       m_count = 0
       for note in self.notes:
         m_count += 1 / int(note.length)
@@ -151,6 +149,6 @@ class Score():
 score = Score()
 score.add_signature("3/4")
 score.add_key("Eb.major")
-score.add_notes(["C#.4.8", "Eb.4.2", "G.4.4", "E.4.8", "R.4"])
+score.add_notes(["C#.4.8", "Eb.4.2", "G.4.4", "E.4.8", "R.4", "d.7.2"])
 score.add_lyrics("This is a test song")
 score.generate_lilypond("ltest.ly")
