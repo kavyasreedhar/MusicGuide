@@ -31,7 +31,11 @@ class Note():
     
     out += self.length
     return out
-    
+ 
+class Chord():
+  def __init__(self,
+               notes,
+               length):
 class Signature():
   def __init__(self,
                top=4,
@@ -106,6 +110,8 @@ class Score():
     
   def add_notes(self, notes):
     for note in notes:
+      if type(note) == list:
+
       note_parts = note.split(".")
       note_val, note_len = note_parts[0], note_parts[-1]
       is_rest = (note_val == "R")
@@ -164,6 +170,6 @@ class Score():
 score = Score()
 score.add_signature("3/4")
 score.add_key("Eb.major")
-score.add_notes(["Eb.4.2", "G.4.4", "E.4.8", "C#.4.8", "R.2", "d.7.4", "f#.-1.2"])
+score.add_notes(["Eb.4.2", "G.4.4", ["E.4", "G.2", "8"], "C#.4.8", "R.2", "d.7.4", "f#.-1.2"])
 score.add_lyrics("This is a test song")
 score.generate_lilypond("ltest.ly")
