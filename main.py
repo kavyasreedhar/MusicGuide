@@ -71,7 +71,7 @@ class Lyric():
     if self.lyrics is not None:
       out = "\\addlyrics {\n"
       out += self.lyrics
-      out = "}"
+      out += "}"
       return out
     else:
       return ""
