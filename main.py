@@ -58,7 +58,7 @@ class Key():
     self.key_m = key_m
     
   def print(self):
-    out = "\\key " + self.key_note.print() + " \\" + self.key_m
+    out = "\\key " + self.key_note.print() + " \\" + self.key_m + "\n"
     return out 
 
 class Lyric():
