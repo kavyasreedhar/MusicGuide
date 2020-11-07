@@ -63,18 +63,19 @@ class Score():
       
       m_count = 0
       for note in self.notes:
-        print(m_count, " before")
         m_count += 1 / int(note.length)
         # end measure
-        print(m_count, " ", note.length)
         if m_count > self.signature_top / 4:
-          print("here")
           output.write(" | \n")
           m_count = 1 / int(note.length)
         output.write(note.print())
         output.write(" ")
+
+      # add ending bar line
+      ending_bar = "|."
+      output.write("\\bar" + '"%s"' % ending_bar)
       output.write("}\n")
     
 score = Score()
-score.add_notes(["C#.4.16", "Eb.4.2", "G.4.4", "E.4.8", "R.4"])
+score.add_notes(["C#.4.8", "Eb.4.2", "G.4.4", "E.4.8", "R.4"])
 score.generate_lilypond("ltest.ly")
