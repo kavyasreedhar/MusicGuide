@@ -149,6 +149,6 @@ class Score():
 score = Score()
 score.add_signature("3/4")
 score.add_key("Eb.major")
-score.add_notes(["C#.4.8", "Eb.4.2", "G.4.4", "E.4.8", "R.4", "d.7.2"])
+score.add_notes(["Eb.4.2", "G.4.4", "E.4.8", "C#.4.8", "R.4", "d.7.2", "f.-1.1"])
 score.add_lyrics("This is a test song")
 score.generate_lilypond("ltest.ly")
