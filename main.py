@@ -129,15 +129,30 @@ class Score():
       output.write(self.sig.print())
       output.write(self.key.print())     
       m_count = 0
+      curr_notes, curr_index = [], []
+      i = 0
       for note in self.notes:
+        curr_notes.append(note.value)
+        curr_index.append(i)
         m_count += 1 / int(note.length)
         # end measure
-        if m_count > self.sig.top / 4:
-          output.write(" | \n")
-          m_count = 1 / int(note.length)
+        curr, index = "", ""
+        if m_count >= self.sig.top / 4:
+          print(m_count)
+          for curr_note in curr_notes:
+              curr += " " + curr_note
+          for j in curr_index:
+              index += " " + str(j)
+
+          curr, index = curr[1:], index[1:]
+          assert_print = f"Notes in this measure ({curr}) corresponding to these indices ({index}) do not match time signature."
+          assert m_count == self.sig.top / 4, assert_print
+          m_count = 0 
+          curr_notes = []
+          curr_index = []
         output.write(note.print())
         output.write(" ")
-
+        i += 1
       # add ending bar line
       ending_bar = "|."
       output.write("\\bar" + '"%s"' % ending_bar)
@@ -149,6 +164,6 @@ class Score():
 score = Score()
 score.add_signature("3/4")
 score.add_key("Eb.major")
-score.add_notes(["Eb.4.2", "G.4.4", "E.4.8", "C#.4.8", "R.4", "d.7.2", "f.-1.1"])
+score.add_notes(["Eb.4.2", "G.4.4", "E.4.8", "C#.4.8", "R.2", "d.7.4", "f#.-1.2"])
 score.add_lyrics("This is a test song")
 score.generate_lilypond("ltest.ly")
