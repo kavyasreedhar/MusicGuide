@@ -1,3 +1,4 @@
+  
 class Note():
   def __init__(self,
               value,
@@ -31,12 +32,77 @@ class Note():
     out += self.length
     return out
     
-class Score():
-  def __init__(self):
-    self.notes = []
-    self.signature_top = 4
-    self.signature_bot = 4
+class Signature():
+  def __init__(self,
+               top=4,
+               bot=4):
+    # default time signature
+    self.top = top
+    self.bot = bot
     
+  def print(self):
+    out = "\time " + str(self.top) + "/" + str(self.bot) + "\n"
+    return out
+    
+class Key():
+  def __init__(self, 
+               key_note=Note(value="c",
+                             length="",
+                             is_rest=False,
+                             octave=4,
+                             accidental=""),
+               key_m="major"):
+
+    # default key note
+    self.key_note = key_note
+    self.key_m = key_m
+    
+  def print(self):
+    out = "\key " + self.key_note.print() + " \\" + self.key_m
+    return out 
+
+class Lyric():
+  def __init__(self,
+               lyrics=None):
+    
+    self.lyrics = lyrics
+    
+  def print(self):
+    if self.lyrics is not None:
+    	out = "\addlyrics {\n"
+    	out += lyrics
+    	out = "}"
+        return out
+    else:
+        return ""
+    
+class Score():
+  def __init__(self,
+               S=Signature()):
+    self.notes = []
+    self.sig = Signature()
+    self.key = Key()
+    self.lyrics = ""
+  
+  def add_signature(self, sig): # sig 4/3
+    sig_parts = sig.replace(" ", "").split("/")
+    sig_top = int(sig_parts[0])
+    sig_bot = int(sig_parts[1])
+
+    self.sig = Signature(sig_top, sig_bot)
+    
+  def add_key(self, key): # todo: changing key and sig 
+    key_parts = key.split(".")
+    key_note = Note(value = key_parts[0][0].lower(), 
+                         length = "",
+                         is_rest = False,
+                         octave = 4,
+                         accidental = key_parts[0][1])
+    key_m = key_parts[1]
+    self.key = Key(key_note, key_m)
+                         
+  def add_lyrics(self, lyrics):
+    self.lyrics = Lyric(lyrics)
     
   def add_notes(self, notes):
     for note in notes:
@@ -59,6 +125,9 @@ class Score():
     
   def generate_lilypond(self, filename="lilypond.ly"):
     with open(filename, "w+") as output:
+      output.write(self.sig.print())
+      output.write(self.key.print())
+      
       output.write("\\relative c' {\n")
       
       m_count = 0
@@ -75,7 +144,13 @@ class Score():
       ending_bar = "|."
       output.write("\\bar" + '"%s"' % ending_bar)
       output.write("}\n")
+      
+      output.write(self.lyric.print())
     
+      
 score = Score()
+score.add_key("3/4")
+score.add_key("Eb.major")
 score.add_notes(["C#.4.8", "Eb.4.2", "G.4.4", "E.4.8", "R.4"])
+score.add_lyrics("This is a test song")
 score.generate_lilypond("ltest.ly")
