@@ -215,9 +215,6 @@ class Score():
       output.write(self.sigs[0].print()) # must specify initial signature, key, clef
       output.write(self.keys[0].print())
       output.write(self.clefs[0].print())
-      print(self.sigs[1].bar)
-      print(self.sigs[0].bar)
-      print(self.clefs[1].bar)
       m_count = 0
       bar_num = 0
       curr_notes, curr_index = [], []
