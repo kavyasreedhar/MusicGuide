@@ -13,7 +13,7 @@ class Note():
     self.octave = octave
     self.accidental = accidental
     
-  def print(self):
+  def print(self, use_len=True):
     out = ""
     out += self.value
     if self.accidental == "#":
@@ -29,13 +29,33 @@ class Note():
           for i in range(4 - self.octave):
       	    out += ","  
     
-    out += self.length
+    if use_len:
+        out += self.length
     return out
  
 class Chord():
   def __init__(self,
                notes,
                length):
+
+      self.notes = notes
+      self.length = length
+      self.value = self.get_value()
+
+  def get_value(self):
+      val = ""
+      for note in self.notes:
+        val += note.value + " "
+
+      return val
+
+  def print(self):
+      out = "<"
+      for note in self.notes:
+          out += " " + note.print(False)
+      out += " >" + str(self.length)
+      return out
+
 class Signature():
   def __init__(self,
                top=4,
@@ -135,10 +155,31 @@ class Score():
     bar_count = 0
     bar_total = 1/(self.sigs[-1].bot) * (self.sigs[-1].top) 
     for note in notes:
+      # check if chord
       if type(note) == list:
+        chord_len = int(note[-1])
+        note_len = chord_len
+        chord_notes = []
+        for i in range(len(note) - 1):
+          item = note[i]
+          chord_notes.append(self.extract_note(item, chord_len))
+        self.notes.append(Chord(chord_notes, chord_len))
+      else:
+        ret_note, note_len = self.extract_note(note)
+        self.notes.append(ret_note)
 
+      bar_count += 1/int(note_len)
+      if (bar_count  >= bar_total):
+          self.bar += 1
+
+  def extract_note(self, note, note_len=None):
       note_parts = note.split(".")
-      note_val, note_len = note_parts[0], note_parts[-1]
+      note_val = note_parts[0]
+      ret_note_len = False
+      if note_len is None:
+        ret_note_len = True
+        note_len = note_parts[-1]
+
       is_rest = (note_val == "R")
       if not is_rest:
         note_octave = int(note_parts[1])
@@ -148,16 +189,18 @@ class Score():
         accidental=note_val[1]
       else:
         accidental = None
-      self.notes.append(Note(value=note_val[0].lower(),
+
+      note = Note(value=note_val[0].lower(),
                              length=note_len,
                              is_rest=is_rest,
                              octave=note_octave,
-                             accidental=accidental))
-      bar_count += 1/int(note_len)
-      if (bar_count  >= bar_total):
-          self.bar += 1
+                             accidental=accidental)
 
-    
+      if ret_note_len:
+        return note, note_len
+      else:
+        return note
+
   def generate_lilypond(self, filename="lilypond.ly"):
     with open(filename, "w+") as output:
       output.write("\\relative c' {\n")
@@ -181,7 +224,7 @@ class Score():
 
           curr, index = curr[1:], index[1:]
           assert_print = f"Notes in this measure ({curr}) corresponding to these indices ({index}) do not match time signature."
-          assert m_count == self.sigs[0].top / 4, assert_print
+          # assert m_count == self.sigs[0].top / 4, assert_print
           m_count = 0 
           curr_notes = []
           curr_index = []
@@ -200,7 +243,7 @@ score = Score()
 score.add_signature("3/4")
 score.add_key("Eb.major")
 score.add_clef("treble")
-score.add_notes(["Eb.4.2", "G.4.4", "E.4.8", "C#.4.8", "R.4", "d.7.2", "f.-1.1"])
+score.add_notes(["Eb.4.2", ["G.4", "a.1", "4"], "E.4.8", "C#.4.8", "R.4", "d.7.2", "f.-1.1"])
 score.add_signature("3/16")
 score.add_key("c.minor")
 score.add_clef("alto")
