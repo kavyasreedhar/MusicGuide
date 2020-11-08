@@ -229,6 +229,8 @@ class Score():
         # end measure
         m_total = self.sigs[0].top / self.sigs[0].bot
         curr, index = "", ""
+        output.write(note.print())
+        output.write(" ")
         if m_count >= m_total:
           print(m_count)
           for curr_note in curr_notes:
@@ -246,8 +248,6 @@ class Score():
           output.write(self.print_next_symbol(self.clefs, bar_num))
           curr_notes = []
           curr_index = []
-        output.write(note.print())
-        output.write(" ")
         i += 1
       # add ending bar line
       ending_bar = "|."
