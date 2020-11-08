@@ -65,6 +65,15 @@ class Key():
     out = "\\key " + self.key_note.print() + " \\" + self.key_m + "\n"
     return out 
 
+class Clef():
+  def __init__(self, clef="treble", bar=0):
+    self.clef = clef
+    self.bar = bar
+
+  def print(self):
+    out = "\\clef " + self.clef + "\n"
+    return out
+
 class Lyric():
   def __init__(self,
                lyrics=None):
@@ -79,15 +88,6 @@ class Lyric():
       return out
     else:
       return ""
-
-class Clef():
-  def __init__(self, clef="treble", bar=0):
-    self.clef = clef
-    self.bar = bar
-
-  def print(self):
-    out = "\\clef " + self.clef
-    return out
 
 class Score():
   def __init__(self,
@@ -129,7 +129,7 @@ class Score():
     
   def add_notes(self, notes):
     bar_count = 0
-    bar_total = 1/(self.sigs[-1].bot) * (self.sigs[-1].top) 
+    bar_total = (self.sigs[-1].top)/(self.sigs[-1].bot)
     for note in notes:
       note_parts = note.split(".")
       note_val, note_len = note_parts[0], note_parts[-1]
@@ -149,15 +149,27 @@ class Score():
                              accidental=accidental))
       bar_count += 1/int(note_len)
       if (bar_count  >= bar_total):
+          bar_count = 0
           self.bar += 1
-
-    
+ 
+  # helper function
+  def print_next_symbol(self, symbols, bar):
+    if (len(symbols) > 1 and symbols[1].bar == bar):
+      symbols.pop(0)
+      return symbols[0].print()
+    return ""
+     
   def generate_lilypond(self, filename="lilypond.ly"):
     with open(filename, "w+") as output:
       output.write("\\relative c' {\n")
-      #output.write(self.sig.print())
-      #output.write(self.key.print())     
+      output.write(self.sigs[0].print()) # must specify initial signature, key, clef
+      output.write(self.keys[0].print())
+      output.write(self.clefs[0].print())
+      print(self.sigs[1].bar)
+      print(self.sigs[0].bar)
+      print(self.clefs[1].bar)
       m_count = 0
+      bar_num = 0
       curr_notes, curr_index = [], []
       i = 0
       for note in self.notes:
@@ -165,8 +177,9 @@ class Score():
         curr_index.append(i)
         m_count += 1 / int(note.length)
         # end measure
+        m_total = self.sigs[0].top / self.sigs[0].bot
         curr, index = "", ""
-        if m_count >= self.sigs[0].top / 4: #TODO uses first sig
+        if m_count >= m_total:
           print(m_count)
           for curr_note in curr_notes:
               curr += " " + curr_note
@@ -174,9 +187,13 @@ class Score():
               index += " " + str(j)
 
           curr, index = curr[1:], index[1:]
-          assert_print = f"Notes in this measure ({curr}) corresponding to these indices ({index}) do not match time signature."
-          assert m_count == self.sigs[0].top / 4, assert_print
+          assert_print = "Notes in this measure ("+curr+") corresponding to these indices ("+index+") do not match time signature."
+          assert m_count == m_total, assert_print
           m_count = 0 
+          bar_num += 1
+          output.write(self.print_next_symbol(self.sigs, bar_num))
+          output.write(self.print_next_symbol(self.keys, bar_num))
+          output.write(self.print_next_symbol(self.clefs, bar_num))
           curr_notes = []
           curr_index = []
         output.write(note.print())
@@ -188,16 +205,17 @@ class Score():
       output.write("}\n")
       
       output.write(self.lyrics.print())
-    
-      
+
+   
+
 score = Score()
 score.add_signature("3/4")
 score.add_key("Eb.major")
 score.add_clef("treble")
-score.add_notes(["Eb.4.2", "G.4.4", "E.4.8", "C#.4.8", "R.4", "d.7.2", "f.-1.1"])
-score.add_signature("3/16")
+score.add_notes(["Eb.4.2", "G.4.4", "E.4.8", "C#.4.8", "R.4", "d.7.4", "f.-1.2", "R.4"])
+score.add_signature("4/8")
 score.add_key("c.minor")
 score.add_clef("alto")
-score.add_notes(["Eb.4.2", "G.4.4", "E.4.8", "C#.4.8", "R.2", "d.7.4", "f#.-1.2"])
+score.add_notes(["Eb.4.2", "G.4.4", "E.4.8", "C#.4.8", "R.2", "d.7.4", "f#.5.4"])
 score.add_lyrics("This is a test song")
 score.generate_lilypond("ltest.ly")
