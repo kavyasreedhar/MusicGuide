@@ -269,3 +269,23 @@ score.add_clef("alto")
 score.add_notes(["Eb.4.2", "G.4.4", "E.4.8", "C#.4.8", "R.2", "d.7.4", "f#.5.4"])
 score.add_lyrics("This is a test song")
 score.generate_lilypond("ltest.ly")
+
+# happy birthday
+score = Score()
+score.add_key("4/4")
+score.add_key("c.major")
+score.add_signature("treble")
+score.add_notes(["R.2", "R.4", "G.4.8", "G.4.8"])
+score.add_lyrics("Hap -- py")
+score.add_key("3/4")
+score.add_key("c.major")
+score.add_signature("treble")
+notes = ["A.4.4", "G.4.4", "C.5.4", "B.4.2"]
+notes += ["G.4.8", "G.4.8", "A.4.4", "G.4.4", "D.5.4", "C.5.2"]
+notes += ["G.4.8", "G.4.8", "G.5.4", "E.5.4", "C.5.4", "B.4.4", "A.4.4"]
+notes += ["F.5.8", "F.5.8", "E.5.4", "C.5.4", "D.5.4", "C.5.2", "R.4"]
+score.add_notes(notes)
+score.add_lyrics("birth -- day to you! Hap -- py birth -- day to you! Hap -- py birth -- day dear Soph -- ia, Hap -- py birth -- day to you!")
+score.generate_lilypond("birthday.ly")
+
+
