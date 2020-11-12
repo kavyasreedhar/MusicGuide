@@ -211,7 +211,7 @@ class Score():
      
   def generate_lilypond(self, filename="lilypond.ly"):
     with open(filename, "w+") as output:
-      output.write("\\relative c' {\n")
+      output.write("\\absolute {\n")
       output.write(self.sigs[0].print()) # must specify initial signature, key, clef
       output.write(self.keys[0].print())
       output.write(self.clefs[0].print())
