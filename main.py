@@ -22,11 +22,11 @@ class Note():
     	out += "es"
     # pitch 
     if not self.is_rest:
-        if self.octave > 4:
-          for i in range(self.octave - 4):
+        if self.octave > 3:
+          for i in range(self.octave - 3):
             out += "'"  
-        elif self.octave < 4:
-          for i in range(4 - self.octave):
+        elif self.octave < 3:
+          for i in range(3 - self.octave):
       	    out += ","  
     
     if use_len:
@@ -211,7 +211,7 @@ class Score():
      
   def generate_lilypond(self, filename="lilypond.ly"):
     with open(filename, "w+") as output:
-      output.write("\\relative c' {\n")
+      output.write("\\absolute {\n")
       output.write(self.sigs[0].print()) # must specify initial signature, key, clef
       output.write(self.keys[0].print())
       output.write(self.clefs[0].print())
