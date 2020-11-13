@@ -2,11 +2,15 @@ class Note():
     def __init__(self,
               value,
               length,
+              fingering=None,
+              articulations=[],
               is_rest=False,
               octave=None,
               accidental=None):
         self.value = value
         self.length = length
+        self.fingering = fingering
+        self.articulations = articulations
         self.is_rest = is_rest
         self.octave = octave
         self.accidental = accidental
@@ -29,6 +33,12 @@ class Note():
     
         if use_len:
             out += self.length
+    
+        if self.fingering is not None:
+            out += "^" + str(self.fingering)
+            
+        for art in self.articulations:
+            out += "\\" + art
             
         return out
 
@@ -155,7 +165,7 @@ class Staff():
         self.sigs.append(Signature(sig_top, sig_bot, self.bar))
     
     def add_key(self, key): # todo: changing key and sig 
-        key_parts = key.split(".")
+        key_parts = key.split(" ")
         if (len(key_parts[0]) > 1):
             accidental = key_parts[0][1]
         else:
@@ -178,7 +188,7 @@ class Staff():
         for note in notes:
             # check if chord
             if type(note) == list:
-                chord_len = int(note[-1])
+                chord_len = int(note[-1].split(" ")[0])
                 note_len = chord_len
                 chord_notes = []
                 for i in range(len(note) - 1):
@@ -195,26 +205,50 @@ class Staff():
                 self.bar += 1
 
     def extract_note(self, note, note_len=None):
-        note_parts = note.split(".")
+        note_parts = note.split(" ")
         note_val = note_parts[0]
-        ret_note_len = False
-        if note_len is None:
-            ret_note_len = True
-            note_len = note_parts[-1]
+        ret_note_len = False    # chord
+        
 
-        is_rest = (note_val == "R")
+        is_rest = (note_val == "R")    # if note is rest
         if not is_rest:
             note_octave = int(note_parts[1])
+            if note_len is None:    # not chord
+                ret_note_len = True
+                note_len = note_parts[2]
         else:
             note_octave = None
+            if note_len is None:    # not chord
+                ret_note_len = True
+                note_len = note_parts[1]
         
-        if len(note_val) > 1:
+        if len(note_val) > 1:        # check for accidental
             accidental=note_val[1]
         else:
             accidental = None
+        
+        if ret_note_len:
+            fingart_index = 3 # not chord
+        else:
+            fingart_index = 2 # is chord
+            
+        if len(note_parts) > fingart_index: 
+            # fingering
+            try:
+                fingering = int(note_parts[fingart_index])
+                art_start_index = fingart_index + 1
+            # articulation
+            except:
+                art_start_index = fingart_index
+                
+        else: 
+            art_start_index = len(note_parts)
+            fingering = None
 
         note = Note(value=note_val[0].lower(),
                              length=note_len,
+                             fingering = fingering,
+                             articulations = note_parts[art_start_index:],
                              is_rest=is_rest,
                              octave=note_octave,
                              accidental=accidental)
@@ -279,12 +313,12 @@ score = Score()
 melody = Staff()
 score.add_staff(melody)
 melody.add_signature("3/4")
-melody.add_key("Eb.major")
+melody.add_key("Eb major")
 melody.add_clef("treble")
-melody.add_notes(["Eb.4.2", ["G.4", "a.1", "4"], "E.4.8", "C#.4.8", "R.4", "d.7.4", ["f.-1", "a.2", "2"], "R.4"])
+melody.add_notes(["Eb 4 2 4 upbow ff staccato", ["G 4", "a 1", "4 fermata downbow"], "E 4 8", "C# 4 8", "R 4", "d 7 4", ["f -1", "a 2", "2"], "R 4"])
 melody.add_signature("4/8")
-melody.add_key("c.minor")
+melody.add_key("c minor")
 melody.add_clef("alto")
-melody.add_notes(["Eb.4.2", "G.4.4", "E.4.8", "C#.4.8", "R.2", "d.7.4", "f#.5.4"])
+melody.add_notes(["Eb 4 2", "G 4 4", "E 4 8", "C# 4 8", "R 2", "d 7 4", "f# 5 4"])
 score.add_lyrics("This is a test song")
 score.generate_lilypond("ltest.ly")
