@@ -159,6 +159,25 @@ class Score():
                 output.write("\n>>\n")
 
 ############################################
+
+def get_fing_art(fingart_index, note_parts):
+            
+    fingering = None
+    if len(note_parts) > fingart_index: 
+        # fingering
+        try:
+            fingering = int(note_parts[fingart_index])
+            art_start_index = fingart_index + 1
+        # articulation
+        except:
+            art_start_index = fingart_index
+
+    else: 
+        art_start_index = len(note_parts)
+        
+    return fingering, note_parts[art_start_index:]
+
+        
 class Staff():
     def __init__(self):
         self.notes = []
@@ -201,12 +220,8 @@ class Staff():
             if type(note) == list:
                 misc = note[-1].split(" ")
                 chord_len = int(misc[0])
-                fingering = None
-                try:
-                    fingering = int(misc[1])
-                    art_start_index = 2
-                except:
-                    art_start_index = 1
+                
+                fingering, articulation = get_fing_art(1, misc)
                 
                 note_len = chord_len
                 chord_notes = []
@@ -214,7 +229,7 @@ class Staff():
                     item = note[i]
                     chord_notes.append(self.extract_note(item, chord_len))
                 
-                self.notes.append(Chord(chord_notes, chord_len, fingering, misc[art_start_index:]))
+                self.notes.append(Chord(chord_notes, chord_len, fingering, articulation))
             else:
                 ret_note, note_len = self.extract_note(note)
                 self.notes.append(ret_note)
@@ -247,26 +262,12 @@ class Staff():
         else:
             accidental = None
         
-        fingart_index = 3
-            
-        fingering = None
-        if len(note_parts) > fingart_index: 
-            # fingering
-            try:
-                fingering = int(note_parts[fingart_index])
-                art_start_index = fingart_index + 1
-            # articulation
-            except:
-                art_start_index = fingart_index
-                
-        else: 
-            art_start_index = len(note_parts)
-            
+        fingering, articulations = get_fing_art(3, note_parts)
 
         note = Note(value=note_val[0].lower(),
                              length=note_len,
                              fingering = fingering,
-                             articulations = note_parts[art_start_index:],
+                             articulations = articulations,
                              is_rest=is_rest,
                              octave=note_octave,
                              accidental=accidental)
