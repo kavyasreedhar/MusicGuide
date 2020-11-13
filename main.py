@@ -231,7 +231,8 @@ class Staff():
             fingart_index = 3 # not chord
         else:
             fingart_index = 2 # is chord
-            
+        
+        fingering = None
         if len(note_parts) > fingart_index: 
             # fingering
             try:
