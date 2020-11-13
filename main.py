@@ -45,11 +45,15 @@ class Note():
 class Chord():
     def __init__(self,
                notes,
-               length):
+               length,
+               fingering=None,
+               articulations=[]):
 
         self.notes = notes
         self.length = length
         self.value = self.get_value()
+        self.fingering = fingering
+        self.articulations = articulations
 
     def get_value(self):
         val = ""
@@ -63,6 +67,13 @@ class Chord():
         for note in self.notes:
             out += " " + note.print(False)
         out += " >" + str(self.length)
+        
+        if self.fingering is not None:
+            out += "^" + str(self.fingering)
+            
+        for art in self.articulations:
+            out += "\\" + art
+            
         return out
 
 class Signature():
@@ -188,13 +199,22 @@ class Staff():
         for note in notes:
             # check if chord
             if type(note) == list:
-                chord_len = int(note[-1].split(" ")[0])
+                misc = note[-1].split(" ")
+                chord_len = int(misc[0])
+                fingering = None
+                try:
+                    fingering = int(misc[1])
+                    art_start_index = 2
+                except:
+                    art_start_index = 1
+                
                 note_len = chord_len
                 chord_notes = []
                 for i in range(len(note) - 1):
                     item = note[i]
                     chord_notes.append(self.extract_note(item, chord_len))
-                self.notes.append(Chord(chord_notes, chord_len))
+                
+                self.notes.append(Chord(chord_notes, chord_len, fingering, misc[art_start_index:]))
             else:
                 ret_note, note_len = self.extract_note(note)
                 self.notes.append(ret_note)
@@ -227,11 +247,9 @@ class Staff():
         else:
             accidental = None
         
-        if ret_note_len:
-            fingart_index = 3 # not chord
-        else:
-            fingart_index = 2 # is chord
+        fingart_index = 3
             
+        fingering = None
         if len(note_parts) > fingart_index: 
             # fingering
             try:
@@ -243,7 +261,7 @@ class Staff():
                 
         else: 
             art_start_index = len(note_parts)
-            fingering = None
+            
 
         note = Note(value=note_val[0].lower(),
                              length=note_len,
