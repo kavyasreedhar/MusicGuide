@@ -31,6 +31,7 @@ class Note():
     def __init__(self,
               value,
               length,
+              num_dots=0,
               fingering=None,
               articulations=[],
               is_rest=False,
@@ -43,6 +44,7 @@ class Note():
         self.is_rest = is_rest
         self.octave = octave
         self.accidental = accidental
+        self.num_dots = num_dots
     
     def print(self, use_len=True):
         out = ""
@@ -62,7 +64,10 @@ class Note():
     
         if use_len:
             out += self.length
-    
+            
+        for i in range(self.num_dots):
+            out += "."
+            
         if self.fingering is not None:
             out += "^" + str(self.fingering)
             
@@ -75,6 +80,7 @@ class Chord():
     def __init__(self,
                notes,
                length,
+               num_dots=0,
                fingering=None,
                articulations=[]):
 
@@ -83,6 +89,7 @@ class Chord():
         self.value = self.get_value()
         self.fingering = fingering
         self.articulations = articulations
+        self.num_dots = num_dots
 
     def get_value(self):
         val = ""
@@ -96,6 +103,9 @@ class Chord():
         for note in self.notes:
             out += " " + note.print(False)
         out += " >" + str(self.length)
+        
+        for i in range(self.num_dots):
+            out += "."
         
         if self.fingering is not None:
             out += "^" + str(self.fingering)
@@ -256,6 +266,7 @@ class Score():
                 
                 third_chord = Chord(chord_notes,
                                     note.length,
+                                    note.num_dots,
                                     note.fingering,
                                     note.articulation)
                 intnotes.append(third_chord)
@@ -305,6 +316,7 @@ class Score():
         return Note(value = list(NoteVal.keys())[value],
                     length = note.length,
                     is_rest = note.is_rest,
+                    num_dots = note.num_dots,
                     articulations = note.articulations,
                     octave = octave,
                     accidental = note.accidental)
@@ -372,7 +384,8 @@ class Staff():
             # check if chord
             if type(note) == list:
                 misc = note[-1].split(" ")
-                chord_len = int(misc[0])
+                
+                chord_len, chord_num_dots = self.get_dots(misc[0])
                 
                 fingering, articulation = get_fing_art(1, misc)
                 
@@ -380,19 +393,34 @@ class Staff():
                 chord_notes = []
                 for i in range(len(note) - 1):
                     item = note[i]
-                    chord_notes.append(self.extract_note(item, chord_len))
+                    chord_notes.append(self.extract_note(item, chord_len, chord_num_dots))
                 
-                self.notes.append(Chord(chord_notes, chord_len, fingering, articulation))
+                self.notes.append(Chord(chord_notes, chord_len, chord_num_dots, fingering, articulation))
             else:
                 ret_note, note_len = self.extract_note(note)
                 self.notes.append(ret_note)
-
-            bar_count += 1/int(note_len)
+            
+            one_div_note_len = 1/int(note_len)
+            for i in range(self.notes[-1].num_dots):
+                one_div_note_len += 1/(2**(i+1) * int(note_len))
+                
+            bar_count += one_div_note_len
             if (bar_count  >= bar_total):
                 bar_count = 0
                 self.bar += 1
 
-    def extract_note(self, note, note_len=None):
+    def get_dots(self, input_list):
+        dot_start_index = input_list.find(".")
+        if dot_start_index == -1:
+            length = input_list
+            num_dots = 0
+        else:
+            length = input_list[0:dot_start_index]
+            num_dots = len(input_list) - dot_start_index
+        
+        return length, num_dots
+                
+    def extract_note(self, note, note_len=None, note_num_dots=None):
         note_parts = note.split(" ")
         note_val = note_parts[0]
         ret_note_len = False    # chord
@@ -403,12 +431,12 @@ class Staff():
             note_octave = int(note_parts[1])
             if note_len is None:    # not chord
                 ret_note_len = True
-                note_len = note_parts[2]
+                note_len, note_num_dots = self.get_dots(note_parts[2])
         else:
             note_octave = None
             if note_len is None:    # not chord
                 ret_note_len = True
-                note_len = note_parts[1]
+                note_len, note_num_dots = self.get_dots(note_parts[1])
         
         if len(note_val) > 1:        # check for accidental
             accidental=note_val[1]
@@ -418,12 +446,13 @@ class Staff():
         fingering, articulations = get_fing_art(3, note_parts)
 
         note = Note(value=note_val[0].lower(),
-                             length=note_len,
-                             fingering = fingering,
-                             articulations = articulations,
-                             is_rest=is_rest,
-                             octave=note_octave,
-                             accidental=accidental)
+                     length=note_len,
+                     num_dots=note_num_dots,
+                     fingering = fingering,
+                     articulations = articulations,
+                     is_rest=is_rest,
+                     octave=note_octave,
+                     accidental=accidental)
 
         if ret_note_len:
             return note, note_len
@@ -454,14 +483,18 @@ class Staff():
             for note in self.notes:
                 curr_notes.append(note.value)
                 curr_index.append(i)
-                m_count += 1 / int(note.length)
+                
+                one_div_note_len = 1/int(note.length)
+                for j in range(note.num_dots):
+                    one_div_note_len += 1/(2**(j+1) * int(note.length))
+                
+                m_count += one_div_note_len
                 # end measure
                 m_total = self.sigs[0].top / self.sigs[0].bot
                 curr, index = "", ""
                 output.write(note.print())
                 output.write(" ")
                 if m_count >= m_total:
-                    # print(m_count)
                     for curr_note in curr_notes:
                         curr += " " + curr_note
                     for j in curr_index:
