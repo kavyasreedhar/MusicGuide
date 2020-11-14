@@ -224,8 +224,6 @@ class Score():
                     for chord_note in note.notes:
                         check_legal_note(chord_note, min_octave, max_octave, min_note, max_note, staff, min_, max_)
         
-        self.generate_lilypond()
-            
 ############################################
 
 def get_fing_art(fingart_index, note_parts):
