@@ -1,10 +1,9 @@
 #!/bin/bash
 
-python birthday.py
+python $1.py
 cd lilypond
-lilypond ../birthday.ly
-cp birthday.pdf ../
-rm birthday.pdf
+lilypond ../$1.ly
+cp $1.pdf ../
+rm $1.pdf
 cd ..
-rm birthday.ly
-evince birthday.pdf &
+rm $1.ly
