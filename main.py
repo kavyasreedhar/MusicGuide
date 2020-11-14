@@ -270,7 +270,7 @@ class Score():
             
         new_notes = []
         for i in range(len(staff.notes)):
-            randinterval = rand.randint(0, len(intervals)-1)
+            randinterval = rand.randrange(len(intervals))
             new_note = intnotes[randinterval][i]
             new_notes.append(new_note)
         
