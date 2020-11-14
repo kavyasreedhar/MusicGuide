@@ -294,6 +294,7 @@ class Score():
         return Note(value = list(NoteVal.keys())[value],
                     length = note.length,
                     is_rest = note.is_rest,
+                    articulations = note.articulations,
                     octave = octave,
                     accidental = note.accidental)
 
