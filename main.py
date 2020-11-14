@@ -163,6 +163,25 @@ class Lyric():
 ###########################################
 NoteVal = {"c": 0, "d": 1, "e": 2, "f": 3, "g": 4, "a": 5, "b": 6}
 
+def check_legal_note(note, min_octave, max_octave, min_note, max_note, staff, min_, max_):
+    legal = True
+    # check if note is in range of instrument
+    if note.octave < min_octave:
+        legal = False
+    elif note.octave == min_octave and NoteVal[note.value.lower()] < NoteVal[min_note.lower()]:
+        legal = False
+
+    if note.octave > max_octave:
+        legal = False
+    elif note.octave == max_octave and NoteVal[note.value.lower()] > NoteVal[max_note.lower()]:
+        legal = False
+
+    if not legal:
+        print("Note " + note.value + " in octave " + str(note.octave) +  " is not within range of instrument " + staff.instrument)
+
+        sys.exit()
+        
+        
 class Score():
     def __init__(self):
         self.staves = []
@@ -200,23 +219,11 @@ class Score():
             max_note, max_octave = max_[0], int(max_[1])
             
             for note in staff.notes:
-                legal = True
-                # check if note is in range of instrument
-                if note.octave < min_octave:
-                    legal = False
-                elif note.octave == min_octave and NoteVal[note.value.lower()] < min_note:
-                    legal = False
-                
-                if note.octave > max_octave:
-                    legal = False
-                elif note.octave == max_octave and NoteVal[note.value.lower()] > max_note:
-                    legal = False
-
-                if not legal:
-                    print("Note " + note.value + " in octave " + note.octave +  " is not within range of instrument " 
-                          + staff.instrument + ": " + min_ + " " + max_)
-                    
-                    sys.exit()
+                if type(note) is Note and not note.is_rest:
+                    check_legal_note(note, min_octave, max_octave, min_note, max_note, staff, min_, max_)
+                elif type(note) is Chord:
+                    for chord_note in note.notes:
+                        check_legal_note(chord_note, min_octave, max_octave, min_note, max_note, staff, min_, max_)
                     
             
 ############################################
