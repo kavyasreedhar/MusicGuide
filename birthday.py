@@ -27,7 +27,7 @@ notes += ["F 3 4", ["A 3", "C 4", "4"], ["A 3", "C 4", "4"], "C 3 4", ["E 3", "G
 bass.add_notes(notes)
 
 score.add_lyrics("Hap -- py birth -- day to you! Hap -- py birth -- day to you! Hap -- py birth -- day dear Soph -- ia, Hap -- py birth -- day to you!")
-score.change_instrumentation(["viola", "cello"])
+score.change_instrumentation(["violin", "cello"])
 
-score.add_intervals_harmony(melody, "violin")
+score.add_intervals_harmony(melody, "viola")
 score.generate_lilypond("birthday.ly")
