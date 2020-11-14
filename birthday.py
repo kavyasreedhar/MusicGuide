@@ -28,5 +28,5 @@ bass.add_notes(notes)
 
 score.add_lyrics("Hap -- py birth -- day to you! Hap -- py birth -- day to you! Hap -- py birth -- day dear Soph -- ia, Hap -- py birth -- day to you!")
 score.generate_lilypond("birthday.ly")
-
+score.change_instrumentation(["violin", "viola"])
 

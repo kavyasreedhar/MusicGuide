@@ -1,3 +1,30 @@
+import sys
+
+Instruments = {
+    "piano RHS": ["treble", "A 0", "C 8"],
+    "piano LHS": ["bass", "A 0", "C 8"],
+    "viola": ["alto", "C 3","E 6"],
+    "violin": ["treble", "G 3", "A 7"],
+    "cello": ["bass", "C 2", "C 6"],
+    "double bass": ["bass", "C 2", "C 5"]
+}    
+    
+#    "oboe": "treble",
+#    "flute": "treble",
+#    "clarinet": "treble",
+#    "alto sax": "treble",
+#    "tenor sax": "treble",
+#    "baritone sax": "treble",
+#    "french horn": "treble",
+#    "trombone": "bass",
+#    "bassoon" "bass",
+#    "guitar": "treble",
+#    "timpani": "bass",
+#    "drums": "percussion",
+#    "trumpet": "treble",
+#    "tuba": "bass"
+#}
+
 class Note():
     def __init__(self,
               value,
@@ -134,6 +161,7 @@ class Lyric():
             return ""
 
 ###########################################
+NoteVal = {"c": 0, "d": 1, "e": 2, "f": 3, "g": 4, "a": 5, "b": 6}
 
 class Score():
     def __init__(self):
@@ -157,7 +185,40 @@ class Score():
         with open(filename, "a+") as output:
             if len(self.staves) > 1:
                 output.write("\n>>\n")
+                
+    def change_instrumentation(self, instruments):
+        for i in range(len(self.staves)):
+            staff = self.staves[i]
+            staff.instrument = instruments[i]
+            staff.clefs = [Instruments[staff.instrument][0]]
+            
+            # get min and max note and octave range for instrument
+            min_ = Instruments[staff.instrument][1].split(" ")
+            min_note, min_octave = min_[0], min_[1]
+            
+            max_ = Instruments[staff.instrument][2].split(" ")
+            max_note, max_octave = max_[0], max_[1]
+            
+            for note in staff.notes:
+                legal = True
+                # check if note is in range of instrument
+                if note.octave < min_octave:
+                    legal = False
+                elif note.octave == min_octave and NoteVal[note.value.lower()] < min_note:
+                    legal = False
+                
+                if note.octave > max_octave:
+                    legal = False
+                elif note.octave == max_octave and NoteVal[note.value.lower()] > max_note:
+                    legal = False
 
+                if not legal:
+                    print("Note " + note.value + " in octave " + note.octave +  " is not within range of instrument " 
+                          + staff.instrument + ": " + min_ + " " + max_)
+                    
+                    sys.exit()
+                    
+            
 ############################################
 
 def get_fing_art(fingart_index, note_parts):
@@ -184,6 +245,7 @@ class Staff():
         self.sigs = []
         self.keys = []
         self.clefs = []
+        self.instrument = None
         self.lyrics = ""
         self.bar = 0
         
@@ -287,6 +349,8 @@ class Staff():
     def print(self, filename="lilypond.ly"):
         with open(filename, "a+") as output:
             output.write("\\new Staff {\n")
+            if self.instrument is not None:
+                output.write('\\with {\n instrumentName = #"' + self.instrument + '"\n }')
             output.write("\\absolute {\n")
             output.write(self.sigs[0].print()) # must specify initial signature, key, clef
             output.write(self.keys[0].print())
@@ -341,3 +405,5 @@ melody.add_clef("alto")
 melody.add_notes(["Eb 4 2", "G 4 4", "E 4 8", "C# 4 8", "R 2", "d 7 4", "f# 5 4"])
 score.add_lyrics("This is a test song")
 score.generate_lilypond("ltest.ly")
+
+score.change_instrumentation(["violin", "viola"])
