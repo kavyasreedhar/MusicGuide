@@ -440,8 +440,8 @@ class Staff():
         with open(filename, "a+") as output:
             output.write("\\new Staff \n")
             if self.instrument is not None:
-                output.write('\\with {\n instrumentName = #"' + self.instrument + '"\n midiInstrument = #"' + self.instrument +'"\n }{')
-            output.write("\\absolute {\n")
+                output.write('\\with {\n instrumentName = #"' + self.instrument + '"\n midiInstrument = #"' + self.instrument +'"\n }')
+            output.write("{\\absolute {\n")
             output.write(self.sigs[0].print()) # must specify initial signature, key, clef
             output.write(self.keys[0].print())
             output.write(self.clefs[0].print())
