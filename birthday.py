@@ -30,4 +30,5 @@ score.add_lyrics("Hap -- py birth -- day to you! Hap -- py birth -- day to you! 
 score.change_instrumentation(["violin", "cello"])
 
 score.add_intervals_harmony(melody, "viola")
+score.add_intervals_harmony(melody, "violin")
 score.generate_lilypond("birthday.ly")
