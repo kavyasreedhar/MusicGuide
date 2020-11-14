@@ -209,8 +209,7 @@ class Score():
         for i in range(len(self.staves)):
             staff = self.staves[i]
             staff.instrument = instruments[i]
-            staff.clefs = [Instruments[staff.instrument][0]]
-            
+            staff.clefs = [Clef(clef = Instruments[staff.instrument][0])]
             # get min and max note and octave range for instrument
             min_ = Instruments[staff.instrument][1].split(" ")
             min_note, min_octave = min_[0], int(min_[1])
@@ -413,4 +412,3 @@ melody.add_notes(["Eb 4 2", "G 4 4", "E 4 8", "C# 4 8", "R 2", "d 7 4", "f# 5 4"
 score.add_lyrics("This is a test song")
 score.generate_lilypond("ltest.ly")
 
-score.change_instrumentation(["violin", "viola"])
