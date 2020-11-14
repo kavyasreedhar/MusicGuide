@@ -2,7 +2,7 @@
 
 python ../examples/$1.py
 cd ../../lilypond
-lilypond ..MusicGuide/scripts/$1.ly
+lilypond ../MusicGuide/scripts/$1.ly
 cp $1.pdf ../
 cp $1.midi ../
 rm $1.pdf
@@ -11,3 +11,4 @@ cd ..
 #rm $1.ly
 cp $1.pdf /mnt/c/Users/kavya/Downloads
 cp $1.midi /mnt/c/Users/kavya/Downloads
+cd MusicGuide/scripts
