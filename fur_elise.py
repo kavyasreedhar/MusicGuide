@@ -34,7 +34,7 @@ bass.add_notes(notes)
 
 #score.add_intervals_harmony(melody, "violin")
 #score.add_intervals_harmony(melody, "cello")
-score.add_intervals_harmony(melody, "viola")
+score.add_intervals_harmony(melody, intervals =[5])
 #score.add_intervals_harmony(melody, "violin")
-score.generate_lilypond("fur_elise.ly")
+score.generate_lilypond("fur_elise.ly", 60)
 
