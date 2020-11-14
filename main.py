@@ -223,7 +223,8 @@ class Score():
                 elif type(note) is Chord:
                     for chord_note in note.notes:
                         check_legal_note(chord_note, min_octave, max_octave, min_note, max_note, staff, min_, max_)
-                    
+        
+        self.generate_lilypond()
             
 ############################################
 
