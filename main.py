@@ -197,6 +197,7 @@ class Score():
     
     def generate_lilypond(self, filename="lilypond.ly"):
         with open(filename, "w+") as output:
+            output.write("\\score { \n")
             if len(self.staves) > 1:
                 output.write("<<\n")
         for staff in self.staves:
@@ -206,7 +207,11 @@ class Score():
         with open(filename, "a+") as output:
             if len(self.staves) > 1:
                 output.write("\n>>\n")
-                
+            output.write("\\layout{} \n") # print out sheet music
+            output.write("\\midi{ \n") #  output midi 
+            output.write("\\tempo 4 = 120 \n") # default tempo
+            output.write("}}") # end midi and score   
+
     def change_instrumentation(self, instruments):
         for i in range(len(self.staves)):
             staff = self.staves[i]
@@ -464,3 +469,4 @@ class Staff():
             ending_bar = "|."
             output.write("\\bar" + '"%s"' % ending_bar)
             output.write("}\n}\n") #Staff, absolute
+
