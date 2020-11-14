@@ -1,8 +1,8 @@
 #!/bin/bash
 
-python $1.py
-cd lilypond
-lilypond ../$1.ly
+python ../examples/$1.py
+cd ../../lilypond
+lilypond ..MusicGuide/scripts/$1.ly
 cp $1.pdf ../
 cp $1.midi ../
 rm $1.pdf
