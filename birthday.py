@@ -19,7 +19,7 @@ score.add_staff(bass)
 bass.add_signature("4/4")
 bass.add_key("c major")
 bass.add_clef("bass")
-bass.add_notes(["R 1"])
+bass.add_notes(["G 2 16", "B 2 16", "D 3 16", "F 3 16", "G 3 16", "B 3 16", "D 4 16", "F 4 16", "G 4 4 fermata",  "R 4"])
 bass.add_signature("3/4")
 notes = ["C 3 4", ["E 3", "G 3", "4"], ["E 3", "G 3", "4"], "G 2 4", ["D 3", "F 3", "4"], ["D 3", "F 3", "4"]]
 notes += ["G 2 4", ["D 3", "F 3", "4"], ["D 3", "F 3", "4"], "C 3 4", ["E 3", "G 3", "4"], ["E 3", "G 3", "4"], "C 3 4", ["E 3", "G 3", "4"], ["E 3", "G 3", "4"]]
