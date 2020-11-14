@@ -57,8 +57,8 @@ notes += ["A 2 16", "E 3 16", "A 3 16", "R 16", "R 8"]
 notes += ["E 2 16", "E 3 16", "G# 3 16", "R 16", "R 8"]
 notes += ["A 2 16", "E 3 16", "A 3 16", "R 16", "R 8", "R 8", "R 8", "R 8"]
 notes += ["A 2 16", "E 3 16", "A 3 16", "R 16", "R 8"]
-notes += ["E 2 16", "E 3 16", "G# 3 16", "R 16", "R 8"]
-notes += ["A 2 16", "E 3 16", "A 3 16", "R 16", "R 8"]
+#notes += ["E 2 16", "E 3 16", "G# 3 16", "R 16", "R 8"]
+#notes += ["A 2 16", "E 3 16", "A 3 16", "R 16", "R 8"]
 bass.add_notes(notes)
 
 # score.change_instrumentation(["piano", "cello"])
