@@ -195,7 +195,7 @@ class Score():
     def add_staff(self, staff):
         self.staves.append(staff)
     
-    def generate_lilypond(self, filename="lilypond.ly"):
+    def generate_lilypond(self, filename = "lilypond.ly", tempo = 120, tempo_note = 4):
         with open(filename, "w+") as output:
             output.write("\\score { \n")
             if len(self.staves) > 1:
@@ -209,27 +209,32 @@ class Score():
                 output.write("\n>>\n")
             output.write("\\layout{} \n") # print out sheet music
             output.write("\\midi{ \n") #  output midi 
-            output.write("\\tempo 4 = 120 \n") # default tempo
+            output.write("\\tempo " + str(tempo_note) + " = " + str(tempo) + " \n")
             output.write("}}") # end midi and score   
 
+    # change all staves to a list of instruments
     def change_instrumentation(self, instruments):
         for i in range(len(self.staves)):
             staff = self.staves[i]
-            staff.instrument = instruments[i]
-            staff.clefs = [Clef(clef = Instruments[staff.instrument][0])]
-            # get min and max note and octave range for instrument
-            min_ = Instruments[staff.instrument][1].split(" ")
-            min_note, min_octave = min_[0], int(min_[1])
-            
-            max_ = Instruments[staff.instrument][2].split(" ")
-            max_note, max_octave = max_[0], int(max_[1])
-            
-            for note in staff.notes:
-                if type(note) is Note and not note.is_rest:
-                    check_legal_note(note, min_octave, max_octave, min_note, max_note, staff, min_, max_)
-                elif type(note) is Chord:
-                    for chord_note in note.notes:
-                        check_legal_note(chord_note, min_octave, max_octave, min_note, max_note, staff, min_, max_)
+            self.change_one_instrument(instruments[i], staff)
+                        
+    # change one staff to a different instrument
+    def change_one_instrument(self, instrument, staff):
+        staff.instrument = instrument
+        staff.clefs = [Clef(clef = Instruments[staff.instrument][0])]
+        # get min and max note and octave range for instrument
+        min_ = Instruments[staff.instrument][1].split(" ")
+        min_note, min_octave = min_[0], int(min_[1])
+
+        max_ = Instruments[staff.instrument][2].split(" ")
+        max_note, max_octave = max_[0], int(max_[1])
+
+        for note in staff.notes:
+            if type(note) is Note and not note.is_rest:
+                check_legal_note(note, min_octave, max_octave, min_note, max_note, staff, min_, max_)
+            elif type(note) is Chord:
+                for chord_note in note.notes:
+                    check_legal_note(chord_note, min_octave, max_octave, min_note, max_note, staff, min_, max_)
         
     # return (notes + interval) one octave lower
     # helper function
@@ -266,9 +271,11 @@ class Score():
         harmony = copy.deepcopy(staff)
         self.add_staff(harmony)
         harmony.notes = notes
+        return harmony
         
     # add random harmony from given interval list
-    def add_intervals_harmony(self, staff, intervals=[3, 4, 6]):
+    def add_intervals_harmony(self, staff, instrument=None, intervals=[3, 4, 6]):
+        
         intnotes = []
         for interval in intervals:
             intnotes.append(self.create_harmony_notes(staff, interval))
@@ -279,10 +286,13 @@ class Score():
             new_note = intnotes[randinterval][i]
             new_notes.append(new_note)
         
-        self.add_basic_harmony(staff, new_notes)
+        harmony = self.add_basic_harmony(staff, new_notes)
+        
+        if instrument is not None:
+            self.change_one_instrument(instrument, harmony)
         
                 
-    def harmony_note(self, interval, note, ):
+    def harmony_note(self, interval, note):
         abs_val = NoteVal[note.value] + interval # move up by interval
         if abs_val > 6: # check if moved to higher octave
             octave = note.octave
@@ -470,4 +480,3 @@ class Staff():
             ending_bar = "|."
             output.write("\\bar" + '"%s"' % ending_bar)
             output.write("}\n}\n") #Staff, absolute
-
