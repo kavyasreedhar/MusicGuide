@@ -194,10 +194,10 @@ class Score():
             
             # get min and max note and octave range for instrument
             min_ = Instruments[staff.instrument][1].split(" ")
-            min_note, min_octave = min_[0], min_[1]
+            min_note, min_octave = min_[0], int(min_[1])
             
             max_ = Instruments[staff.instrument][2].split(" ")
-            max_note, max_octave = max_[0], max_[1]
+            max_note, max_octave = max_[0], int(max_[1])
             
             for note in staff.notes:
                 legal = True
