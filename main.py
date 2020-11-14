@@ -1,5 +1,6 @@
 import sys
 import copy 
+import random as rand
 
 Instruments = {
     "piano RHS": ["treble", "A 0", "C 8"],
@@ -225,38 +226,59 @@ class Score():
                     for chord_note in note.notes:
                         check_legal_note(chord_note, min_octave, max_octave, min_note, max_note, staff, min_, max_)
         
-    def add_basic_harmony(self, staff):
-        harmony = copy.deepcopy(staff)
-        self.add_staff(harmony)
-        thirds = []
+    # return (notes + interval) one octave lower
+    # helper function
+    def create_harmony_notes(self, staff, interval):
+        intnotes = []
         for note in staff.notes:
             if type(note) is Note:
                 if not note.is_rest:
-                    third = self.harmony_note(3, note)
-                    thirds.append(third)
+                    inote = self.harmony_note(interval, note)
+                    intnotes.append(inote)
                 else:
-                    thirds.append(note)
+                    intnotes.append(note)
                     
             elif type(note) is Chord:
                 chord_notes = []
                 for chord_note in note.notes:
-                    chord_notes.append(self.harmony_note(3, chord_note))
+                    chord_notes.append(self.harmony_note(interval, chord_note))
                 
                 third_chord = Chord(chord_notes,
                                     note.length,
                                     note.fingering,
                                     note.articulation)
-                thirds.append(third_chord)
+                intnotes.append(third_chord)
                 
             else:
                 print("Unexcepted note type...exiting")
                 sys.exit()
                 
-        harmony.notes = thirds
+        return intnotes
+        
+    # add harmony object to staff
+    # helper function
+    def add_basic_harmony(self, staff, notes):
+        harmony = copy.deepcopy(staff)
+        self.add_staff(harmony)
+        harmony.notes = notes
+        
+    # add random harmony from given interval list
+    def add_intervals_harmony(self, staff, intervals=[3, 4, 6]):
+        intnotes = []
+        for interval in intervals:
+            intnotes.append(self.create_harmony_notes(staff, interval))
+            
+        new_notes = []
+        for i in range(len(staff.notes)):
+            randinterval = rand.randint(0, len(intervals)-1)
+            new_note = intnotes[randinterval][i]
+            new_notes.append(new_note)
+        
+        self.add_basic_harmony(staff, new_notes)
         
                 
     def harmony_note(self, interval, note, ):
-        abs_val = NoteVal[note.value] + interval # move up a third
+        abs_val = NoteVal[note.value] + interval # move up by interval
         if abs_val > 6: # check if moved to higher octave
             octave = note.octave
         else:
