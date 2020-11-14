@@ -1,3 +1,5 @@
+#!/bin/bash
+
 python birthday.py
 cd lilypond
 lilypond birthday.ly
