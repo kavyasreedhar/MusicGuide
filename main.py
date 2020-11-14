@@ -1,4 +1,5 @@
 import sys
+import copy 
 
 Instruments = {
     "piano RHS": ["treble", "A 0", "C 8"],
@@ -224,6 +225,52 @@ class Score():
                     for chord_note in note.notes:
                         check_legal_note(chord_note, min_octave, max_octave, min_note, max_note, staff, min_, max_)
         
+    def add_basic_harmony(self, staff):
+        harmony = copy.deepcopy(staff)
+        self.add_staff(harmony)
+        thirds = []
+        for note in staff.notes:
+            if type(note) is Note:
+                if not note.is_rest:
+                    third = self.harmony_note(3, note)
+                    thirds.append(third)
+                else:
+                    thirds.append(note)
+                    
+            elif type(note) is Chord:
+                chord_notes = []
+                for chord_note in note.notes:
+                    chord_notes.append(self.harmony_note(3, chord_note))
+                
+                third_chord = Chord(chord_notes,
+                                    note.length,
+                                    note.fingering,
+                                    note.articulation)
+                thirds.append(third_chord)
+                
+            else:
+                print("Unexcepted note type...exiting")
+                sys.exit()
+                
+        harmony.notes = thirds
+        
+                
+    def harmony_note(self, interval, note, ):
+        abs_val = NoteVal[note.value] + interval # move up a third
+        if abs_val > 6: # check if moved to higher octave
+            octave = note.octave
+        else:
+            octave = note.octave - 1 # and move down an octave
+
+        value = abs_val % 7
+        
+        return Note(value = list(NoteVal.keys())[value],
+                    length = note.length,
+                    is_rest = note.is_rest,
+                    octave = octave,
+                    accidental = note.accidental)
+
+        
 ############################################
 
 def get_fing_art(fingart_index, note_parts):
@@ -395,4 +442,3 @@ class Staff():
             ending_bar = "|."
             output.write("\\bar" + '"%s"' % ending_bar)
             output.write("}\n}\n") #Staff, absolute
-
