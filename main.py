@@ -442,6 +442,7 @@ class Staff():
             if self.instrument is not None:
                 output.write('\\with {\n instrumentName = #"' + self.instrument + '"\n midiInstrument = #"' + self.instrument +'"\n }')
             output.write("{\\absolute {\n")
+            output.write("\\override Score.BarNumber.break-visibility = ##(#t #t #t)")
             output.write(self.sigs[0].print()) # must specify initial signature, key, clef
             output.write(self.keys[0].print())
             output.write(self.clefs[0].print())
