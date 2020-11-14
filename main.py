@@ -203,7 +203,8 @@ class Score():
         for staff in self.staves:
             staff.print(filename = filename)
         with open(filename, "a+") as output:
-            output.write(self.lyrics.print())
+            if self.lyrics != "":
+                output.write(self.lyrics.print())
         with open(filename, "a+") as output:
             if len(self.staves) > 1:
                 output.write("\n>>\n")
