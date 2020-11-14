@@ -1,3 +1,5 @@
+from MusicGuide.src.main import *
+
 score = Score()
 melody = Staff()
 score.add_staff(melody)

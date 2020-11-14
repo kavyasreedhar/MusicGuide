@@ -1,4 +1,5 @@
-from main import *
+from MusicGuide.src.main import *
+
 # happy birthday
 score = Score()
 melody = Staff()
