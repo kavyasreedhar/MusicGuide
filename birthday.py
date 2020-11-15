@@ -6,12 +6,12 @@ score.add_staff(melody)
 melody.add_signature("4/4")
 melody.add_key("c major")
 melody.add_clef("treble")
-melody.add_notes(["R 2", "R 4", "G 4 8 1 f", "G 4 8"])
+melody.add_notes(["R 2", "R 4", "G 4 8. 1 f", "G 4 16"])
 melody.add_signature("3/4")
 notes = ["A 4 4 2", "G 4 4", "C 5 4 4", "B 4 2"]
-notes += ["G 4 8", "G 4 8", "A 4 4", "G 4 4", "D 5 4 5", "C 5 2"]
-notes += ["G 4 8", "G 4 8", "G 5 4 5", "E 5 4 3", "C 5 4 1", "B 4 4 2", "A 4 4 fermata"]
-notes += ["F 5 8 5", "F 5 8", "E 5 4", "C 5 4", "D 5 4", "C 5 2", "R 4"]
+notes += ["G 4 8.", "G 4 16", "A 4 4", "G 4 4", "D 5 4 5", "C 5 2"]
+notes += ["G 4 8.", "G 4 16", "G 5 4 5", "E 5 4 3", "C 5 4 1", "B 4 4 2", "A 4 4 fermata"]
+notes += ["F 5 8. 5", "F 5 16", "E 5 4", "C 5 4", "D 5 4", "C 5 2", "R 4"]
 melody.add_notes(notes)
 
 bass = Staff()
