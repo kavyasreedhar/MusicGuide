@@ -178,21 +178,24 @@ NoteVal = {"c": 0, "d": 1, "e": 2, "f": 3, "g": 4, "a": 5, "b": 6}
 
 def check_legal_note(note, min_octave, max_octave, min_note, max_note, staff, min_, max_):
     legal = True
+    orig_octave = note.octave
     # check if note is in range of instrument
     if note.octave < min_octave:
         legal = False
+        note.octave = min_octave + 1
     elif note.octave == min_octave and NoteVal[note.value.lower()] < NoteVal[min_note.lower()]:
         legal = False
+        note.octave += 1
 
     if note.octave > max_octave:
         legal = False
+        note.octave = max_octave - 1
     elif note.octave == max_octave and NoteVal[note.value.lower()] > NoteVal[max_note.lower()]:
         legal = False
+        note.octave -= 1
 
     if not legal:
-        print("Note " + note.value + " in octave " + str(note.octave) +  " is not within range of instrument " + staff.instrument)
-
-        sys.exit()
+        print("Note " + note.value + " in octave " + str(orig_octave) +  " is not within range of instrument " + staff.instrument + "...not expected? Note moved to octave" + str(note.octave))
         
         
 class Score():
