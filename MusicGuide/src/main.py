@@ -37,6 +37,7 @@ class Note():
               is_rest=False,
               octave=None,
               accidental=None):
+        
         self.value = value
         self.length = length
         self.fingering = fingering
@@ -320,6 +321,47 @@ class Score():
                     articulations = note.articulations,
                     octave = octave,
                     accidental = note.accidental)
+    
+    def add_chord_harmony(self, staff, instrument=None):
+        bar_count = 0
+        bar_num = 0
+        bar_total = (staff.sigs[-1].top)/(staff.sigs[-1].bot)
+        new_notes = []
+        
+        for note in staff.notes:
+            
+            if bar_count == 0:
+                if not note.is_rest:
+                    chord_start_note = note
+                    chord_start_note.octave -= 1
+
+                    chord_second_note = copy.deepcopy(chord_start_note)
+                    chord_second_note.value = list(NoteVal.keys())[(NoteVal[note.value] + 3) % 7]
+
+                    chord_third_note = copy.deepcopy(chord_start_note)
+                    chord_third_note.value = list(NoteVal.keys())[(NoteVal[note.value] + 5) % 7]
+
+                    chord = Chord([chord_start_note, chord_second_note, chord_third_note],
+                        length = str(1/bar_total),
+                        num_dots=0,
+                        fingering=None,
+                        articulations=[])
+
+                    new_notes.append(chord)
+                else:
+                    new_notes.append(note)
+            
+                note_len = note.length
+                one_div_note_len = 1/int(note_len)
+                for i in range(staff.notes[-1].num_dots):
+                    one_div_note_len += 1/(2**(i+1) * int(note_len))
+
+                bar_count += one_div_note_len
+                if (bar_count  >= bar_total):
+                    bar_count = 0
+                    bar_num += 1
+                    
+        self.add_basic_harmony(staff, new_notes)
 
         
 ############################################
