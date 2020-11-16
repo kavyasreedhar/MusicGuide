@@ -18,14 +18,18 @@ notes2 += ["D 5 8.", "F 4 16", "E 5 16", "D 5 16"]
 notes2 += ["C 5 8.", "E 4 16", "D 5 16", "C 5 16"] 
 notes2 += ["B 4 8", "R 16", "E 4 16", "E 5 16", "R 16"]
 notes2 += ["R 16", "E 5 16", "E 6 16", "R 16", "R 16", "D# 5 16"]
-notes2 += ["E 5 8", "R 16", "D# 4 16", "E 5 16", "D# 5 16", "E 5 16", "D# 5 16", "E 5 16", "B 4 16", "D 5 16", "C 5 16"]
+notes2 += ["E 5 8", "R 16", "D# 5 16", "E 5 16", "D# 5 16", "E 5 16", "D# 5 16", "E 5 16", "B 4 16", "D 5 16", "C 5 16"]
 
-noteend = ["R 4"]
+notes2 += ["A 4 8", "R 16", "C 4 16", "E 4 16", "A 4 16", "B 4 8", "R 16", "E 4 16", "G# 4 16", "B 4 16"]
+notes2 += ["C 5 8", "R 16", "E 4 16", "E 5 16", "D# 5 16", "E 5 16", "D# 5 16", "E 5 16", "D# 5 16", "E 5 16", "B 4 16", "D 5 16", "C 5 16"]
+notes2 += ["A 4 8", "R 16", "C 4 16", "E 4 16", "A 4 16", "B 4 8", "R 4 8", "R 16", "E 4 16", "C 5 16", "B 4 16", "A 4 8", "R 16", "B 4 16", "C 5 16", "D 5 16"]
+
+# noteend = ["R 4"]
 
 melody.add_notes(notes)
 melody.add_notes(notes2)
 melody.add_notes(notes)
-melody.add_notes(noteend)
+# melody.add_notes(noteend)
 
 bass = Staff()
 score.add_staff(bass)
