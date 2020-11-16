@@ -1,6 +1,5 @@
 from MusicGuide.src.main import *
 
-            
 score = Score()
 melody = Staff()
 score.add_staff(melody)
@@ -81,4 +80,6 @@ bass.add_notes(notes)
 # score.add_intervals_harmony(melody, "violin")
 # score.add_chord_harmony(melody)
 score.add_header("Canon in D", "Johann Pachelbel")
+#score.create_transition_matrix()
+score.transition_harmony(melody, "violin")
 score.generate_lilypond("canon_in_d.ly")
