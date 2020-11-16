@@ -202,15 +202,24 @@ class Score():
     def __init__(self):
         self.staves = []
         self.lyrics = ""
-    
+        self.title = ""
+        self.composer = ""
+        
     def add_lyrics(self, lyrics):
         self.lyrics = Lyric(lyrics)
 
     def add_staff(self, staff):
         self.staves.append(staff)
     
+    def add_header(self, title="", composer=""):
+        self.title = title
+        self.composer = composer
+    
     def generate_lilypond(self, filename = "lilypond.ly", tempo = 120, tempo_note = 4):
         with open(filename, "w+") as output:
+            output.write('\\header { \n title = "' + self.title + '"\n' 
+                         + 'composer = "' + self.composer + '"\n }\n')
+            
             output.write("\\score { \n")
             if len(self.staves) > 1:
                 output.write("<<\n")
