@@ -268,6 +268,43 @@ class Score():
                     # print(total)
                     self.transition_matrix[note][next_note] /= total
         # print(self.transition_matrix)
+
+    def create_one_transition_matrix(self, staff): 
+        for i in range(len(staff.notes) - 1):
+            note, next_note = staff.notes[i], staff.notes[i + 1]
+            if type(note) == Chord:
+                note_comp = note.notes[0]
+            else:
+                note_comp = note
+                
+            if type(next_note) == Chord:
+                next_note_comp = next_note.notes[0]
+            else:
+                next_note_comp = next_note
+            
+            real_note = note_comp.value
+            if note_comp.accidental is not None:
+                real_note += note_comp.accidental
+                
+            next_real_note = next_note_comp.value
+            if next_note_comp.accidental is not None:
+                next_real_note += next_note_comp.accidental
+            
+            self.transition_matrix[real_note][next_real_note] += 1
+            # print(real_note, " ", next_real_note)
+            
+        
+        for note in self.transition_matrix.keys():
+            total = 0
+            for next_note in self.transition_matrix[note].keys():
+                
+                total += self.transition_matrix[note][next_note]
+                
+            for next_note in self.transition_matrix[note].keys():
+                if (total != 0):
+                    # print(total)
+                    self.transition_matrix[note][next_note] /= total
+        # print(self.transition_matrix)
         
         
     def transition_get_next_note(self, note, melody_note):
