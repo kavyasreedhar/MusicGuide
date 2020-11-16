@@ -194,8 +194,8 @@ def check_legal_note(note, min_octave, max_octave, min_note, max_note, staff, mi
         legal = False
         note.octave -= 1
 
-    if not legal:
-        print("Note " + note.value + " in octave " + str(orig_octave) +  " is not within range of instrument " + staff.instrument + "...not expected? Note moved to octave" + str(note.octave))
+    #if not legal:
+    #    print("Note " + note.value + " in octave " + str(orig_octave) +  " is not within range of instrument " + staff.instrument + "...not expected? Note moved to octave" + str(note.octave))
         
         
 class Score():
@@ -204,6 +204,22 @@ class Score():
         self.lyrics = ""
         self.title = ""
         self.composer = ""
+        note_vals = ["a", "b", "c", "d", "e", "f", "g"]
+        note_keys = []
+        for i in note_vals:
+            note_keys.append(i)
+            note_keys.append(i+"#")
+            note_keys.append(i+"b")
+            
+        note_keys.append("r")
+        
+        inter = {}
+        for key in note_keys:
+            inter[key] = 0
+            
+        self.transition_matrix = {}
+        for key in note_keys:
+            self.transition_matrix[key] = copy.deepcopy(inter)
         
     def add_lyrics(self, lyrics):
         self.lyrics = Lyric(lyrics)
@@ -215,6 +231,88 @@ class Score():
         self.title = title
         self.composer = composer
     
+    def create_transition_matrix(self):
+        for staff in self.staves:
+            for i in range(len(staff.notes) - 1):
+                note, next_note = staff.notes[i], staff.notes[i + 1]
+                if type(note) == Chord:
+                    note_comp = note.notes[0]
+                else:
+                    note_comp = note
+                    
+                if type(next_note) == Chord:
+                    next_note_comp = next_note.notes[0]
+                else:
+                    next_note_comp = next_note
+            
+                real_note = note_comp.value
+                if note_comp.accidental is not None:
+                    real_note += note_comp.accidental
+                
+                next_real_note = next_note_comp.value
+                if next_note_comp.accidental is not None:
+                    next_real_note += next_note_comp.accidental
+            
+                self.transition_matrix[real_note][next_real_note] += 1
+                # print(real_note, " ", next_real_note)
+            
+        
+        for note in self.transition_matrix.keys():
+            total = 0
+            for next_note in self.transition_matrix[note].keys():
+                
+                total += self.transition_matrix[note][next_note]
+                
+            for next_note in self.transition_matrix[note].keys():
+                if (total != 0):
+                    # print(total)
+                    self.transition_matrix[note][next_note] /= total
+        # print(self.transition_matrix)
+        
+        
+    def transition_get_next_note(self, note, melody_note):
+        num = rand.random()
+        real_note = note.value
+        if note.accidental is not None:
+            real_note += note.accidental
+            
+        probs = self.transition_matrix[real_note]
+        
+        prob_sum = 0
+        for prob in probs.keys():
+            p = probs[prob]
+            prob_sum += p
+            if prob_sum >= num:
+                next_note = prob
+                note.value = next_note[0]
+                if len(next_note) > 1:
+                    note.accidental = next_note[1]
+                else:
+                    note.accidental = None
+                return note
+                
+        return melody_note
+            
+            
+    def transition_harmony(self, melody_staff, instrument):
+        self.create_transition_matrix()
+        
+        if type(melody_staff.notes[0]) is Chord:
+            start_note = melody_staff.notes[0].notes[0]
+        else:
+            start_note = melody_staff.notes[0]
+            
+        new_staff = copy.deepcopy(melody_staff)
+        new_staff.notes[0] = start_note
+        
+        for i in range(1, len(melody_staff.notes)):
+            note = new_staff.notes[i]
+            if not note.is_rest:
+                new_staff.notes[i] = self.transition_get_next_note(note, melody_staff.notes[i])
+                
+        self.add_basic_harmony(new_staff, new_staff.notes)
+        
+        
     def generate_lilypond(self, filename = "lilypond.ly", tempo = 120, tempo_note = 4):
         with open(filename, "w+") as output:
             output.write('\\header { \n title = "' + self.title + '"\n' 
