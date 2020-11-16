@@ -22,7 +22,7 @@ notes2 += ["E 5 8", "R 16", "D# 5 16", "E 5 16", "D# 5 16", "E 5 16", "D# 5 16",
 
 notes2 += ["A 4 8", "R 16", "C 4 16", "E 4 16", "A 4 16", "B 4 8", "R 16", "E 4 16", "G# 4 16", "B 4 16"]
 notes2 += ["C 5 8", "R 16", "E 4 16", "E 5 16", "D# 5 16", "E 5 16", "D# 5 16", "E 5 16", "D# 5 16", "E 5 16", "B 4 16", "D 5 16", "C 5 16"]
-notes2 += ["A 4 8", "R 16", "C 4 16", "E 4 16", "A 4 16", "B 4 8", "R 4 8", "R 16", "E 4 16", "C 5 16", "B 4 16", "A 4 8", "R 16", "B 4 16", "C 5 16", "D 5 16"]
+notes2 += ["A 4 8", "R 16", "C 4 16", "E 4 16", "A 4 16", "B 4 8", "R 16", "E 4 16", "C 5 16", "B 4 16", "A 4 8", "R 16", "B 4 16", "C 5 16", "D 5 16"]
 
 # noteend = ["R 4"]
 
@@ -72,4 +72,4 @@ bass.add_notes(notes)
 score.add_intervals_harmony(melody, intervals =[5])
 #score.add_intervals_harmony(melody, "violin")
 score.add_header("Für Elise", "Beethoven")
-score.generate_lilypond("fur_elise.ly", 60)
+score.generate_lilypond("fur_elise.ly", 70)
