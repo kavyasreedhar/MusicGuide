@@ -61,13 +61,13 @@ score.add_staff(bass)
 bass.add_signature("4/4")
 bass.add_key("d major")
 bass.add_clef("bass")
-notes_base = ["d 3 8", "a 3 8", "d 4 8", "f 4 8", "a 2 8", "e 3 8", "a 3 8", "c# 4 8"]
-notes_base += ["b 2 8", "f# 3 8", "b 3 8", "d 4 8", "f 2 8", "c 3 8", "f# 3 8", "a 3 8"]
+notes_base = ["d 3 8", "a 3 8", "d 4 8", "f# 4 8", "a 2 8", "e 3 8", "a 3 8", "c# 4 8"]
+notes_base += ["b 2 8", "f# 3 8", "b 3 8", "d 4 8", "f# 2 8", "c# 3 8", "f# 3 8", "a 3 8"]
 notes_base += ["g 2 8", "d 3 8", "g 3 8", "b 3 8", "e 2 8", "a 2 8", "d 3 8", "f# 3 8"]
 notes_base += ["g 2 8", "d 3 8", "g 3 8", "b 3 8", "a 2 8", "e 3 8", "a 3 8", "c# 4 8"]
           
 notes = []
-for i in range(5):
+for i in range(6):
     notes += notes_base
 
 bass.add_notes(notes)
