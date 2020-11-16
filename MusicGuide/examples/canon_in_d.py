@@ -70,6 +70,7 @@ notes = []
 for i in range(5):
     notes += notes_base
 
+bass.add_notes(notes)
 #score.change_instrumentation(["violin", "violin"])
 
 #score.add_intervals_harmony(melody, "violin")
