@@ -271,6 +271,9 @@ class Score():
         
         
     def transition_get_next_note(self, note, melody_note):
+        if melody_note.is_rest:
+            return melody_note
+
         num = rand.random()
         real_note = note.value
         if note.accidental is not None:
@@ -284,6 +287,8 @@ class Score():
             prob_sum += p
             if prob_sum >= num:
                 next_note = prob
+                if next_note == "r":
+                    return melody_note
                 note.value = next_note[0]
                 if len(next_note) > 1:
                     note.accidental = next_note[1]
